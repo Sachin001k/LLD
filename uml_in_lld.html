@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UML in Low-Level Design (LLD)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header {
+            border-bottom: 4px solid #2c3e50;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: #2c3e50;
+            font-size: 1.3em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .diagram-box {
+            background-color: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .highlight-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background-color: #f9f9f9;
+        }
+
+        table th {
+            background-color: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        table td {
+            border: 1px solid #bdc3c7;
+            padding: 12px;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ecf0f1;
+        }
+
+        .key-point {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .example {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .code-block {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #bdc3c7;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .diagram-example {
+            background-color: #f0f8ff;
+            border: 2px dashed #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #bdc3c7;
+        }
+
+        .page-break {
+            page-break-after: always;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>UML in Low-Level Design (LLD)</h1>
+            <p class="subtitle">A Comprehensive Guide to Unified Modeling Language for Software Architecture</p>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="section">
+            <h2>Table of Contents</h2>
+            <ol>
+                <li>Introduction to UML</li>
+                <li>UML Basics and Components</li>
+                <li>Structural Diagrams</li>
+                <li>Behavioral Diagrams</li>
+                <li>Best Practices for LLD</li>
+                <li>Conclusion</li>
+            </ol>
+        </div>
+
+        <!-- 1. Introduction -->
+        <div class="section page-break">
+            <h2>1. Introduction to UML</h2>
+
+            <h3>What is UML?</h3>
+            <p>
+                Unified Modeling Language (UML) is a standardized, general-purpose modeling language used in software engineering.
+                It provides a set of graphic notation techniques to create visual models of software systems. UML is instrumental
+                in Low-Level Design (LLD) as it helps architects and developers communicate design decisions clearly and precisely.
+            </p>
+
+            <h3>Why UML in LLD?</h3>
+            <ul>
+                <li><strong>Communication:</strong> Facilitates clear communication among team members about system design</li>
+                <li><strong>Documentation:</strong> Provides visual documentation of system architecture and components</li>
+                <li><strong>Analysis:</strong> Helps identify potential design issues before implementation</li>
+                <li><strong>Code Generation:</strong> Can be used to generate skeleton code</li>
+                <li><strong>Maintenance:</strong> Aids in understanding and maintaining existing systems</li>
+            </ul>
+
+            <div class="key-point">
+                <strong>Key Point:</strong> UML is a tool for communication and documentation, not a programming language.
+                It's language-agnostic and can be used with any programming language.
+            </div>
+        </div>
+
+        <!-- 2. UML Basics -->
+        <div class="section page-break">
+            <h2>2. UML Basics and Components</h2>
+
+            <h3>Building Blocks of UML</h3>
+
+            <h3>2.1 Classes and Objects</h3>
+            <p>
+                A class is a blueprint for objects. In UML, a class is represented as a rectangle divided into three sections:
+            </p>
+            <div class="diagram-example">┌─────────────────────┐
+│    ClassName        │
+├─────────────────────┤
+│ - attribute1: Type  │
+│ - attribute2: Type  │
+├─────────────────────┤
+│ + method1()         │
+│ + method2()         │
+└─────────────────────┘</div>
+
+            <h3>2.2 Visibility Modifiers</h3>
+            <table>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Visibility</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td>+</td>
+                    <td>Public</td>
+                    <td>Accessible from anywhere</td>
+                </tr>
+                <tr>
+                    <td>-</td>
+                    <td>Private</td>
+                    <td>Accessible only within the class</td>
+                </tr>
+                <tr>
+                    <td>#</td>
+                    <td>Protected</td>
+                    <td>Accessible within the class and subclasses</td>
+                </tr>
+                <tr>
+                    <td>~</td>
+                    <td>Package</td>
+                    <td>Accessible within the same package</td>
+                </tr>
+            </table>
+
+            <h3>2.3 Relationships</h3>
+            <ul>
+                <li><strong>Association:</strong> A relationship between two classes (solid line)</li>
+                <li><strong>Aggregation:</strong> A "has-a" relationship (hollow diamond)</li>
+                <li><strong>Composition:</strong> A strong "part-of" relationship (filled diamond)</li>
+                <li><strong>Inheritance:</strong> A "is-a" relationship (hollow triangle)</li>
+                <li><strong>Dependency:</strong> A "uses-a" relationship (dashed line)</li>
+                <li><strong>Realization:</strong> Implementation of an interface (dashed line with triangle)</li>
+            </ul>
+        </div>
+
+        <!-- 3. Structural Diagrams -->
+        <div class="section page-break">
+            <h2>3. Structural Diagrams</h2>
+            <p>
+                Structural diagrams describe the static structure of a system. They show the building blocks (classes, interfaces,
+                components) and how they are organized and related to each other.
+            </p>
+
+            <h3>3.1 Class Diagram</h3>
+            <p>
+                The most commonly used UML diagram in LLD. It shows the static structure of the system by displaying classes,
+                attributes, operations, and relationships between classes.
+            </p>
+
+            <strong>Components:</strong>
+            <ul>
+                <li>Classes with attributes and operations</li>
+                <li>Relationships between classes (inheritance, association, aggregation, composition)</li>
+                <li>Multiplicity (cardinality) on relationships</li>
+            </ul>
+
+            <div class="example">
+                <strong>Example - Library Management System:</strong>
+                <pre>
+┌──────────────┐         ┌──────────────┐
+│   Library    │────────→│    Book      │
+└──────────────┘         └──────────────┘
+- name: String           - ISBN: String
+- location: String       - title: String
++ addBook()              - author: String
++ removeBook()           - quantity: int
++ searchBook()           + getDetails()
+
+┌──────────────┐         ┌──────────────┐
+│   Member     │────────→│   Loan       │
+└──────────────┘         └──────────────┘
+- memberId: int          - loanId: int
+- name: String           - loanDate: Date
+- email: String          - dueDate: Date
++ borrowBook()           + renewLoan()
++ returnBook()           + isOverdue()
+                </pre>
+            </div>
+
+            <h3>Key Features of Class Diagrams:</h3>
+            <ul>
+                <li><strong>Multiplicity:</strong> Shows how many objects can be related (1, *, 0..1, 1..*)</li>
+                <li><strong>Role Names:</strong> Describes the purpose of the relationship</li>
+                <li><strong>Constraints:</strong> Additional rules or conditions</li>
+            </ul>
+
+            <h3>3.2 Object Diagram</h3>
+            <p>
+                Shows specific instances (objects) of classes and their relationships at a particular point in time.
+                It's essentially a snapshot of the system's state.
+            </p>
+
+            <strong>Characteristics:</strong>
+            <ul>
+                <li>Shows actual objects rather than classes</li>
+                <li>Object names are underlined</li>
+                <li>Includes specific attribute values</li>
+                <li>Useful for illustrating complex scenarios</li>
+            </ul>
+
+            <div class="example">
+                <strong>Example:</strong>
+                <pre>
+object1: Book [ISBN: 123-456-789]
+    title = "Design Patterns"
+    author = "Gang of Four"
+    quantity = 5
+
+object2: Member [memberId: 101]
+    name = "John Doe"
+    email = "john@example.com"
+                </pre>
+            </div>
+
+            <h3>3.3 Component Diagram</h3>
+            <p>
+                Describes the organization and dependencies among a set of components. Components are larger,
+                more abstract building blocks than classes.
+            </p>
+
+            <strong>Uses:</strong>
+            <ul>
+                <li>Showing system architecture at a higher level of abstraction</li>
+                <li>Displaying dependencies between major system components</li>
+                <li>Representing physical packages (JAR, DLL, etc.)</li>
+            </ul>
+
+            <h3>3.4 Deployment Diagram</h3>
+            <p>
+                Shows the physical deployment of artifacts onto nodes (hardware/servers). It represents
+                the runtime architecture of the system.
+            </p>
+
+            <strong>Key Elements:</strong>
+            <ul>
+                <li><strong>Nodes:</strong> Physical devices or servers</li>
+                <li><strong>Artifacts:</strong> Executable components deployed on nodes</li>
+                <li><strong>Connections:</strong> Communication links between nodes</li>
+            </ul>
+
+            <h3>3.5 Package Diagram</h3>
+            <p>
+                Shows the organization of classes into packages and the dependencies between packages.
+                Useful for large systems to show high-level structure.
+            </p>
+
+            <strong>Benefits:</strong>
+            <ul>
+                <li>Organizes classes into logical groups</li>
+                <li>Shows package dependencies</li>
+                <li>Helps identify circular dependencies</li>
+            </ul>
+        </div>
+
+        <!-- 4. Behavioral Diagrams -->
+        <div class="section page-break">
+            <h2>4. Behavioral Diagrams</h2>
+            <p>
+                Behavioral diagrams show the dynamic aspects of the system - how objects interact, what happens
+                over time, and how the system responds to events.
+            </p>
+
+            <h3>4.1 Sequence Diagram</h3>
+            <p>
+                Shows how objects interact with each other over time. It displays the sequence of messages
+                (method calls) exchanged between objects.
+            </p>
+
+            <strong>Key Components:</strong>
+            <ul>
+                <li><strong>Actors/Objects:</strong> Shown at the top as boxes</li>
+                <li><strong>Lifelines:</strong> Dashed vertical lines representing object existence</li>
+                <li><strong>Messages:</strong> Arrows showing communication between objects</li>
+                <li><strong>Activation Boxes:</strong> Rectangles on lifelines showing when object is active</li>
+            </ul>
+
+            <div class="example">
+                <strong>Example - User Login Process:</strong>
+                <pre>
+User          LoginUI         AuthService     Database
+ │               │                 │              │
+ │──Login────────→│                 │              │
+ │                │──Authenticate──→│              │
+ │                │                 │──Query User─→│
+ │                │                 │←─User Data──│
+ │                │←───Valid────────│              │
+ │←─Success───────│                 │              │
+ │                │                 │              │
+                </pre>
+            </div>
+
+            <h3>Types of Messages:</h3>
+            <ul>
+                <li><strong>Synchronous:</strong> Solid arrow (caller waits for response)</li>
+                <li><strong>Asynchronous:</strong> Half arrow (caller doesn't wait)</li>
+                <li><strong>Return:</strong> Dashed arrow (return value)</li>
+                <li><strong>Self-call:</strong> Arrow from object to itself</li>
+            </ul>
+
+            <h3>4.2 Collaboration Diagram (Communication Diagram)</h3>
+            <p>
+                Similar to sequence diagrams but emphasizes relationships between objects.
+                Shows both the structure and the interaction.
+            </p>
+
+            <strong>Differences from Sequence Diagram:</strong>
+            <ul>
+                <li>Focus on object relationships rather than time sequence</li>
+                <li>More compact representation</li>
+                <li>Numbered messages show sequence</li>
+                <li>Better for understanding object structure</li>
+            </ul>
+
+            <h3>4.3 State Machine Diagram (State Diagram)</h3>
+            <p>
+                Models the dynamic behavior of an object or system. Shows the states an object can be in
+                and the transitions between states triggered by events.
+            </p>
+
+            <strong>Key Elements:</strong>
+            <ul>
+                <li><strong>States:</strong> Rounded rectangles representing object conditions</li>
+                <li><strong>Transitions:</strong> Arrows showing state changes with triggering events</li>
+                <li><strong>Initial State:</strong> Filled black circle</li>
+                <li><strong>Final State:</strong> Filled black circle inside another circle</li>
+            </ul>
+
+            <div class="example">
+                <strong>Example - Order Processing:</strong>
+                <pre>
+         Place Order
+            ↓
+    [Pending] ──Confirm──→ [Processing] ──Ship──→ [Shipped]
+        ↑                        │                      │
+        │                        │                      │
+        └────Cancel──────────────┴─────────────────────┘
+                            ↓
+                      [Cancelled]
+                </pre>
+            </div>
+
+            <h3>4.4 Activity Diagram</h3>
+            <p>
+                Similar to flowcharts. Shows the flow of activities within a process. Useful for modeling
+                workflows and business processes.
+            </p>
+
+            <strong>Key Components:</strong>
+            <ul>
+                <li><strong>Activities:</strong> Rounded rectangles</li>
+                <li><strong>Decision Points:</strong> Diamonds</li>
+                <li><strong>Fork/Join:</strong> Thick bars for parallel activities</li>
+                <li><strong>Swimlanes:</strong> Vertical partitions showing who does what</li>
+            </ul>
+
+            <div class="example">
+                <strong>Example - Purchase Order Process:</strong>
+                <pre>
+Customer    Warehouse    Billing
+   │            │          │
+   │─Submit Order→│         │
+   │            │─Check Stock
+   │            │          │
+                ├─Process Payment─→│
+   │            │          │      │
+   │←Confirmation│←─Confirm─│     │
+   │            │          │
+   │            │─Ship Product
+   │←──Delivery──│
+                </pre>
+            </div>
+
+            <h3>4.5 Use Case Diagram</h3>
+            <p>
+                Represents the functionality offered by the system from the user's perspective.
+                Shows how different users (actors) interact with the system.
+            </p>
+
+            <strong>Key Elements:</strong>
+            <ul>
+                <li><strong>Actors:</strong> External entities (stick figures)</li>
+                <li><strong>Use Cases:</strong> System functionality (ovals)</li>
+                <li><strong>Relationships:</strong> Association, include, extend</li>
+                <li><strong>System Boundary:</strong> Rectangle encompassing use cases</li>
+            </ul>
+
+            <strong>Relationship Types:</strong>
+            <ul>
+                <li><strong>Association:</strong> Actor participates in use case</li>
+                <li><strong>Include:</strong> One use case calls another (→→→)</li>
+                <li><strong>Extend:</strong> One use case extends another conditionally (- - -→)</li>
+                <li><strong>Generalization:</strong> Inheritance relationship (inheritance arrow)</li>
+            </ul>
+
+            <h3>4.6 Timing Diagram</h3>
+            <p>
+                Shows the behavior of objects over a period of time, particularly the timing of state changes
+                and events. Useful for real-time systems.
+            </p>
+
+            <h3>4.7 Interaction Overview Diagram</h3>
+            <p>
+                Combines aspects of activity and sequence diagrams. Shows the control flow between different
+                interactions.
+            </p>
+        </div>
+
+        <!-- 5. Best Practices -->
+        <div class="section page-break">
+            <h2>5. Best Practices for LLD using UML</h2>
+
+            <h3>5.1 Design Principles</h3>
+            <ul>
+                <li><strong>Keep It Simple:</strong> Don't overcomplicate diagrams. Show only necessary details.</li>
+                <li><strong>Use Consistent Notation:</strong> Follow UML standards and maintain consistency across all diagrams.</li>
+                <li><strong>Document Assumptions:</strong> Include notes explaining design decisions and constraints.</li>
+                <li><strong>Use Meaningful Names:</strong> Choose clear, descriptive names for classes, methods, and relationships.</li>
+                <li><strong>Apply Design Patterns:</strong> Use established design patterns and document them clearly.</li>
+            </ul>
+
+            <h3>5.2 Class Diagram Best Practices</h3>
+            <ul>
+                <li>Show relevant attributes and operations only</li>
+                <li>Use proper access modifiers (+, -, #, ~)</li>
+                <li>Include multiplicity on relationships</li>
+                <li>Use stereotypes for special classes (e.g., «interface», «abstract»)</li>
+                <li>Group related classes together</li>
+            </ul>
+
+            <h3>5.3 Sequence Diagram Best Practices</h3>
+            <ul>
+                <li>Show one main flow per diagram (use multiple diagrams for alternatives)</li>
+                <li>Use activation boxes to show method execution duration</li>
+                <li>Include notes for complex interactions</li>
+                <li>Number messages to show sequence clearly</li>
+                <li>Use fragments (alt, opt, loop) for conditional logic</li>
+            </ul>
+
+            <h3>5.4 Design Pattern Documentation</h3>
+            <p>
+                When using design patterns in your LLD, document them in UML:
+            </p>
+            <ul>
+                <li><strong>Factory Pattern:</strong> Show creation method and returned objects</li>
+                <li><strong>Decorator Pattern:</strong> Show composition and wrapping relationships</li>
+                <li><strong>Observer Pattern:</strong> Show subscription and notification flow</li>
+                <li><strong>Strategy Pattern:</strong> Show interface and multiple implementations</li>
+                <li><strong>Singleton Pattern:</strong> Show private constructor and static instance</li>
+            </ul>
+
+            <h3>5.5 Documentation Standards</h3>
+            <ul>
+                <li>Include a data dictionary for complex attributes</li>
+                <li>Document all constraints and assumptions</li>
+                <li>Use notes and comments liberally</li>
+                <li>Include revision history</li>
+                <li>Keep diagrams and implementation in sync</li>
+            </ul>
+
+            <h3>5.6 Common Mistakes to Avoid</h3>
+            <ul>
+                <li><strong>Over-detailed diagrams:</strong> Include only relevant information</li>
+                <li><strong>Inconsistent notation:</strong> Follow UML standards strictly</li>
+                <li><strong>Poor naming:</strong> Use clear, descriptive, business-meaningful names</li>
+                <li><strong>Missing multiplicity:</strong> Always specify cardinality on relationships</li>
+                <li><strong>Mixing abstraction levels:</strong> Keep each diagram at consistent abstraction level</li>
+                <li><strong>Outdated diagrams:</strong> Keep UML synchronized with code</li>
+            </ul>
+        </div>
+
+        <!-- 6. Comparison Table -->
+        <div class="section page-break">
+            <h2>6. Quick Reference: Structural vs Behavioral Diagrams</h2>
+
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>Structural Diagrams</th>
+                    <th>Behavioral Diagrams</th>
+                </tr>
+                <tr>
+                    <td><strong>Purpose</strong></td>
+                    <td>Show static structure and organization</td>
+                    <td>Show dynamic behavior and interactions</td>
+                </tr>
+                <tr>
+                    <td><strong>Focus</strong></td>
+                    <td>Classes, components, packages, relationships</td>
+                    <td>Interactions, state changes, activities</td>
+                </tr>
+                <tr>
+                    <td><strong>Types</strong></td>
+                    <td>Class, Object, Component, Deployment, Package</td>
+                    <td>Sequence, State Machine, Activity, Use Case, Communication</td>
+                </tr>
+                <tr>
+                    <td><strong>Primary Use</strong></td>
+                    <td>Architecture and design</td>
+                    <td>Process flow and interactions</td>
+                </tr>
+                <tr>
+                    <td><strong>Time Aspect</strong></td>
+                    <td>Doesn't represent time</td>
+                    <td>Represents temporal aspects</td>
+                </tr>
+                <tr>
+                    <td><strong>Most Used in LLD</strong></td>
+                    <td>Class Diagrams</td>
+                    <td>Sequence & State Diagrams</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 7. Real-World Example -->
+        <div class="section page-break">
+            <h2>7. Real-World Example: E-Commerce System</h2>
+
+            <h3>System Overview</h3>
+            <p>
+                Let's design a simple e-commerce system with users, products, shopping carts, and orders.
+            </p>
+
+            <h3>Structural Design (Class Diagram)</h3>
+            <div class="diagram-box">
+┌──────────────────┐
+│      User        │
+├──────────────────┤
+│ - userId: int    │
+│ - name: String   │
+│ - email: String  │
+├──────────────────┤
+│ + login()        │
+│ + logout()       │
+│ + createOrder()  │
+└────────┬─────────┘
+         │
+         │1    1..*
+         ├─────→ ┌──────────────────┐
+                 │     Order        │
+                 ├──────────────────┤
+                 │ - orderId: int   │
+                 │ - date: Date     │
+                 │ - total: double  │
+                 ├──────────────────┤
+                 │ + addItem()      │
+                 │ + calculateTotal()
+                 └────────┬─────────┘
+                          │
+                          │1    1..*
+                          ├─────→ ┌──────────────────┐
+                                  │  OrderItem       │
+                                  ├──────────────────┤
+                                  │ - quantity: int  │
+                                  │ - price: double  │
+                                  ├──────────────────┤
+                                  │ + getSubtotal()  │
+                                  └────────┬─────────┘
+                                           │
+                                           │ 0..*
+                                           ◇─────→ Product
+            </div>
+
+            <h3>Behavioral Design (Sequence Diagram)</h3>
+            <p>Typical flow when user places an order:</p>
+            <div class="diagram-box">
+User        UI          ShoppingCart    Order       Payment
+ │           │              │            │           │
+ │─Click Order→│             │            │           │
+ │           │─getItems()───→│            │           │
+ │           │←─items────────│            │           │
+ │           │──createOrder()────────────→│           │
+ │           │              │            │─Process───→│
+ │           │              │            │←─Success──│
+ │           │←─orderID────────────────│           │
+ │←─Confirmation│            │            │           │
+ │           │              │            │           │
+            </div>
+
+            <h3>State Machine Diagram (Order States)</h3>
+            <div class="diagram-box">
+[Created] ──submit──→ [Pending Payment]
+                              ↓
+                    ┌───── Payment Confirmed─────┐
+                    ↓                             ↓
+            [Processing]                   [Cancelled]
+                    ↓
+            [Shipped]
+                    ↓
+            [Delivered]
+            </div>
+        </div>
+
+        <!-- Conclusion -->
+        <div class="section">
+            <h2>8. Conclusion</h2>
+
+            <p>
+                UML is a powerful tool for Low-Level Design, providing a standardized way to communicate
+                system architecture and design decisions. The key to effective UML usage is:
+            </p>
+
+            <ul>
+                <li>Use the right diagram type for the right purpose</li>
+                <li>Keep diagrams simple and focused</li>
+                <li>Maintain consistency across all diagrams</li>
+                <li>Document assumptions and constraints</li>
+                <li>Keep diagrams synchronized with implementation</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>Remember:</strong> UML is a means to an end - better communication and clearer design.
+                Don't let UML ceremonies prevent you from focusing on good design principles and practices.
+            </div>
+
+            <h3>Further Resources</h3>
+            <ul>
+                <li>Official UML Specification (OMG - Object Management Group)</li>
+                <li>UML 2.5 Specification</li>
+                <li>Design Patterns: Elements of Reusable Object-Oriented Software</li>
+                <li>Refactoring: Improving the Design of Existing Code</li>
+                <li>Clean Architecture: A Craftsman's Guide to Software Structure and Design</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>Generated: September 8, 2026</p>
+            <p>Document: UML in Low-Level Design (LLD)</p>
+            <p>This document provides a comprehensive guide to using UML for software design documentation.</p>
+        </div>
+    </div>
+</body>
+</html>
