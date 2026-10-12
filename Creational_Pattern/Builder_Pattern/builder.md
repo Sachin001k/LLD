@@ -71,6 +71,56 @@ BurgerMeal meal = new BurgerMeal.BurgerBuilder("Wheat", "Beef")
     .build();
 ```
 
+## Class Diagram
+
+```mermaid
+classDiagram
+    class Main {
+        +main(String[] args)$
+    }
+    class BurgerMeal {
+        -String bunType
+        -String patty
+        -boolean hasCheese
+        -List~String~ toppings
+        -String side
+        -String drink
+        -BurgerMeal(BurgerBuilder builder)
+    }
+    class BurgerBuilder {
+        <<static nested class of BurgerMeal>>
+        -String bunType
+        -String patty
+        -boolean hasCheese
+        -List~String~ toppings
+        -String side
+        -String drink
+        +BurgerBuilder(String bunType, String patty)
+        +withCheese(Boolean hasCheese) BurgerBuilder
+        +withToppings(List~String~ toppings) BurgerBuilder
+        +withSide(String side) BurgerBuilder
+        +withDrink(String drink) BurgerBuilder
+        +build() BurgerMeal
+    }
+
+    BurgerMeal -- BurgerBuilder : nested (inner static class)
+    BurgerBuilder ..> BurgerMeal : creates in build() (dependency)
+    BurgerMeal ..> BurgerBuilder : reads fields in constructor (dependency)
+    Main ..> BurgerBuilder : uses (dependency)
+    Main ..> BurgerMeal : uses (dependency)
+```
+
+### Relationships
+
+| From → To | Relationship | UML Symbol | Why (evidence in code) |
+|-----------|--------------|------------|------------------------|
+| `BurgerMeal` → `BurgerBuilder` | **Nesting** (inner class) | Circle-plus `⊕──` (Mermaid can't draw this, so it's shown as a plain line labelled "nested") | `BurgerBuilder` is declared as `public static class` **inside** `BurgerMeal`, so it can call the private constructor |
+| `BurgerBuilder` → `BurgerMeal` | **Dependency** ("creates") | Dashed arrow `- - ->` | `build()` does `new BurgerMeal(this)` and returns it — the builder **never stores** a `BurgerMeal` field |
+| `BurgerMeal` → `BurgerBuilder` | **Dependency** ("uses") | Dashed arrow `- - ->` | The constructor takes `BurgerBuilder` as a **parameter** and copies its fields; it doesn't keep a reference |
+| `Main` → `BurgerBuilder`, `BurgerMeal` | **Dependency** | Dashed arrow `- - ->` | Only used as local variables inside `main()` |
+
+> **Why not association/composition?** Neither class keeps a field pointing to the other. The builder only exists briefly to make the meal, then gets thrown away. "Uses temporarily" = **dependency**.
+
 ## Important Keywords & Their Purpose
 
 ### `final` (Fields)

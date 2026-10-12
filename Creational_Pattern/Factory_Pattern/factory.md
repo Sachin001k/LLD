@@ -180,6 +180,60 @@ Road Logistics
 
 ---
 
+## Class Diagram
+
+```mermaid
+classDiagram
+    class Logistics {
+        <<interface>>
+        +send() void
+    }
+    class Air {
+        +send() void
+    }
+    class Road {
+        +send() void
+    }
+    class Train {
+        +send() void
+    }
+    class LogisticsFactory {
+        +getLogistics(String mode)$ Logistics
+    }
+    class LogisticsService {
+        +send(String mode) void
+    }
+    class Main {
+        +main(String[] args)$
+    }
+
+    Logistics <|.. Air : implements
+    Logistics <|.. Road : implements
+    Logistics <|.. Train : implements
+    LogisticsFactory ..> Air : creates
+    LogisticsFactory ..> Road : creates
+    LogisticsFactory ..> Train : creates
+    LogisticsFactory ..> Logistics : returns
+    LogisticsService ..> LogisticsFactory : calls static method
+    LogisticsService ..> Logistics : uses (local variable)
+    Main ..> LogisticsService : uses
+```
+
+### Relationships
+
+| From → To | Relationship | UML Symbol | Why (evidence in code) |
+|-----------|--------------|------------|------------------------|
+| `Air`, `Road`, `Train` → `Logistics` | **Realization** (implements) | Dashed line + hollow triangle `- - -▷` | `class Air implements Logistics` |
+| `LogisticsFactory` → `Air`, `Road`, `Train` | **Dependency** ("creates") | Dashed arrow `- - ->` | `return new Air();` etc. — creates and returns them, never stores them |
+| `LogisticsFactory` → `Logistics` | **Dependency** | Dashed arrow `- - ->` | Return type of `getLogistics(...)` |
+| `LogisticsService` → `LogisticsFactory` | **Dependency** | Dashed arrow `- - ->` | Calls the **static** method `LogisticsFactory.getLogistics(mode)` — no factory object is held |
+| `LogisticsService` → `Logistics` | **Dependency** | Dashed arrow `- - ->` | `Logistics logistics` is a **local variable** inside `send()`, not a field |
+| `Main` → `LogisticsService` | **Dependency** | Dashed arrow `- - ->` | Local variable in `main()` |
+
+> **Key point:** `LogisticsService` has **no** arrow to `Air`, `Road`, or `Train`. That missing line is the whole benefit of the Factory Pattern — the client is decoupled from concrete classes.
+
+---
+
 ## Key Benefits of Factory Pattern
 
 | Benefit | Example from this code |
@@ -188,6 +242,15 @@ Road Logistics
 | **Decouples client from concrete classes** | `LogisticsService` never references `Air`, `Road`, or `Train` by name |
 | **Centralized creation logic** | One place (`LogisticsFactory.getLogistics`) controls how objects are built |
 | **Easier testing/maintenance** | Changing how a `Logistics` object is constructed doesn't ripple through every caller |
+
+## Disadvantages
+
+| Disadvantage | Explanation |
+|--------------|-------------|
+| **Factory still violates OCP** | Adding `Sea` still means editing the `if/else` inside `LogisticsFactory` (it only moves the change to one place) |
+| **More classes** | An extra factory class plus an interface for something a plain `new` could do |
+| **String-based selection is fragile** | A typo like `"road"` silently falls into the `else` branch and returns `Train` |
+| **Static method is hard to mock** | `LogisticsFactory.getLogistics(...)` can't easily be swapped out in unit tests |
 
 ---
 

@@ -127,6 +127,82 @@ table.place();
 sofa.recline();
 ```
 
+## Class Diagram
+
+```mermaid
+classDiagram
+    class Client {
+        -FurnitureFactory factory
+    }
+    class FurnitureFactory {
+        <<interface>>
+        +createChair() Chair
+        +createTable() Table
+        +createSofa() Sofa
+    }
+    class ModernFurnitureFactory {
+        +createChair() Chair
+        +createTable() Table
+        +createSofa() Sofa
+    }
+    class VictorianFurnitureFactory {
+        +createChair() Chair
+        +createTable() Table
+        +createSofa() Sofa
+    }
+    class Chair {
+        <<interface>>
+        +sit() void
+    }
+    class Table {
+        <<interface>>
+        +place() void
+    }
+    class Sofa {
+        <<interface>>
+        +recline() void
+    }
+
+    FurnitureFactory <|.. ModernFurnitureFactory : implements
+    FurnitureFactory <|.. VictorianFurnitureFactory : implements
+
+    Chair <|.. ModernChair
+    Chair <|.. VictorianChair
+    Table <|.. ModernTable
+    Table <|.. VictorianTable
+    Sofa <|.. ModernSofa
+    Sofa <|.. VictorianSofa
+
+    ModernFurnitureFactory ..> ModernChair : creates
+    ModernFurnitureFactory ..> ModernTable : creates
+    ModernFurnitureFactory ..> ModernSofa : creates
+    VictorianFurnitureFactory ..> VictorianChair : creates
+    VictorianFurnitureFactory ..> VictorianTable : creates
+    VictorianFurnitureFactory ..> VictorianSofa : creates
+
+    FurnitureFactory ..> Chair : returns
+    FurnitureFactory ..> Table : returns
+    FurnitureFactory ..> Sofa : returns
+
+    Client --> FurnitureFactory : association
+    Client ..> Chair : uses
+    Client ..> Table : uses
+    Client ..> Sofa : uses
+```
+
+### Relationships
+
+| From → To | Relationship | UML Symbol | Why (evidence in code) |
+|-----------|--------------|------------|------------------------|
+| `ModernFurnitureFactory`, `VictorianFurnitureFactory` → `FurnitureFactory` | **Realization** | Dashed line + hollow triangle `- - -▷` | `class ModernFurnitureFactory implements FurnitureFactory` |
+| `ModernChair`, `VictorianChair` → `Chair` (same for `Table`, `Sofa`) | **Realization** | Dashed line + hollow triangle `- - -▷` | `class ModernChair implements Chair` |
+| Concrete factory → its concrete products | **Dependency** ("creates") | Dashed arrow `- - ->` | `return new ModernChair();` — creates and returns, never stores |
+| `FurnitureFactory` → `Chair`, `Table`, `Sofa` | **Dependency** | Dashed arrow `- - ->` | Product interfaces are the **return types** of the factory methods |
+| `Client` → `FurnitureFactory` | **Association** | Solid arrow `───>` | The client holds a `FurnitureFactory factory` reference and uses it for its whole job |
+| `Client` → `Chair`, `Table`, `Sofa` | **Dependency** | Dashed arrow `- - ->` | Products are local variables the client calls `sit()` / `place()` / `recline()` on |
+
+> **Key point:** The client only has lines to **interfaces** (`FurnitureFactory`, `Chair`, `Table`, `Sofa`) — never to `ModernChair` or `VictorianFurnitureFactory`. Swapping the whole family = swapping one factory object.
+
 ## Factory Pattern vs Abstract Factory Pattern
 
 | Aspect | Factory Pattern | Abstract Factory Pattern |

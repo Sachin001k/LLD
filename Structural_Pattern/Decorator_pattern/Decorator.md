@@ -260,6 +260,76 @@ Plain Pizza + Olivea + Extra Cheese
 
 ---
 
+## Decorator Pattern Roles (Mapped to This Code)
+
+| Role | In This Code |
+|------|---------------|
+| **Component** (common interface) | `Pizza` |
+| **Concrete Components** (base objects) | `MargheritaPizza`, `PlainPizza` |
+| **Decorator** (abstract wrapper) | `PizzaDecorator` |
+| **Concrete Decorators** (add behaviour) | `ExtraCheese`, `OlivesPizza` |
+
+---
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class Pizza {
+        <<interface>>
+        +getDescription() String
+        +getCost() double
+    }
+    class MargheritaPizza {
+        +getDescription() String
+        +getCost() double
+    }
+    class PlainPizza {
+        +getDescription() String
+        +getCost() double
+    }
+    class PizzaDecorator {
+        <<abstract>>
+        #Pizza pizza
+        +PizzaDecorator(Pizza pizza)
+    }
+    class ExtraCheese {
+        +ExtraCheese(Pizza pizza)
+        +getDescription() String
+        +getCost() double
+    }
+    class OlivesPizza {
+        +OlivesPizza(Pizza pizza)
+        +getDescription() String
+        +getCost() double
+    }
+    class Main {
+        +main(String[] args)$
+    }
+
+    Pizza <|.. MargheritaPizza : implements
+    Pizza <|.. PlainPizza : implements
+    Pizza <|.. PizzaDecorator : implements
+    PizzaDecorator <|-- ExtraCheese : extends
+    PizzaDecorator <|-- OlivesPizza : extends
+    PizzaDecorator "1" o-- "1" Pizza : aggregation (wraps)
+    Main ..> Pizza : uses
+```
+
+### Relationships
+
+| From → To | Relationship | UML Symbol | Why (evidence in code) |
+|-----------|--------------|------------|------------------------|
+| `MargheritaPizza`, `PlainPizza` → `Pizza` | **Realization** | Dashed line + hollow triangle `- - -▷` | `class MargheritaPizza implements Pizza` |
+| `PizzaDecorator` → `Pizza` | **Realization** ("is-a") | Dashed line + hollow triangle `- - -▷` | `abstract class PizzaDecorator implements Pizza` — a decorated pizza **is still a** `Pizza` |
+| `ExtraCheese`, `OlivesPizza` → `PizzaDecorator` | **Inheritance / Generalization** | Solid line + hollow triangle `───▷` | `class ExtraCheese extends PizzaDecorator` |
+| `PizzaDecorator` → `Pizza` | **Aggregation** ("has-a") | Hollow diamond `◇──` on `PizzaDecorator` side | `protected Pizza pizza` is **passed in through the constructor** — created outside and handed in, e.g. `new ExtraCheese(new OlivesPizza(...))` |
+| `Main` → `Pizza` and concrete classes | **Dependency** | Dashed arrow `- - ->` | Objects are only created as local variables in `main()` |
+
+> **The heart of Decorator:** `PizzaDecorator` has **two** lines to `Pizza` at the same time — it **is-a** `Pizza` (realization) **and has-a** `Pizza` (aggregation). That's what lets decorators wrap each other in any order: `ExtraCheese → OlivesPizza → MargheritaPizza`.
+
+---
+
 ## Key Benefits of Decorator Pattern
 
 | Benefit | Example from this code |
@@ -269,6 +339,16 @@ Plain Pizza + Olivea + Extra Cheese
 | **Easy to Add Features** | Add a new topping by creating one new `PizzaDecorator` subclass |
 | **Single Responsibility** | Each decorator focuses on one thing (`ExtraCheese` only knows about cheese) |
 | **Runtime Flexibility** | Decide which toppings to wrap around a pizza based on user choice, not compile-time class selection |
+
+## Disadvantages
+
+| Disadvantage | Explanation |
+|--------------|-------------|
+| **Many small classes** | Every topping is its own class, so large menus mean many tiny classes |
+| **Hard to debug** | `new ExtraCheese(new OlivesPizza(new MargheritaPizza()))` — a deep chain is hard to step through |
+| **Order can matter** | When decorators change behaviour (not just add cost), wrapping order changes the result |
+| **Hard to remove a layer** | Once wrapped, you can't easily take out a middle topping without rebuilding the chain |
+| **Identity checks break** | A decorated pizza is a different object, so `instanceof MargheritaPizza` returns false |
 
 ---
 

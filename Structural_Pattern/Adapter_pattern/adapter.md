@@ -196,6 +196,61 @@ Paid ₹ 1000.0 using Razorpay for orderId: 12345
 
 ---
 
+## Class Diagram
+
+```mermaid
+classDiagram
+    class paymentGateway {
+        <<interface>>
+        +pay(String orderId, double amount) void
+    }
+    class payUgateway {
+        +pay(String orderId, double amount) void
+    }
+    class Razorpay {
+        <<Adapter>>
+        -RazorpayApi razorpayApi
+        +Razorpay()
+        +pay(String orderId, double amount) void
+    }
+    class RazorpayApi {
+        <<Adaptee - 3rd party>>
+        +makePayment(String invoiceId, double amountInRupees) void
+    }
+    class checkOutService {
+        <<Client>>
+        -paymentGateway paymentGateway
+        +checkOutService(paymentGateway paymentGateway)
+        +checkout(String orderId, double totalAmount) void
+    }
+    class Main {
+        +main(String[] args)$
+    }
+
+    paymentGateway <|.. payUgateway : implements
+    paymentGateway <|.. Razorpay : implements
+    Razorpay "1" *-- "1" RazorpayApi : composition
+    checkOutService "1" o-- "1" paymentGateway : aggregation
+    Main ..> checkOutService : uses
+    Main ..> payUgateway : creates
+    Main ..> Razorpay : creates
+```
+
+### Relationships
+
+| From → To | Relationship | UML Symbol | Why (evidence in code) |
+|-----------|--------------|------------|------------------------|
+| `payUgateway`, `Razorpay` → `paymentGateway` | **Realization** (implements) | Dashed line + hollow triangle `- - -▷` | `class Razorpay implements paymentGateway` |
+| `Razorpay` → `RazorpayApi` | **Composition** (strong "has-a") | Filled diamond `◆──` on `Razorpay` side | `private RazorpayApi razorpayApi` is **created inside** the adapter's constructor (`new RazorpayApi()`); nobody else has it, so it lives and dies with the adapter |
+| `checkOutService` → `paymentGateway` | **Aggregation** (weak "has-a") | Hollow diamond `◇──` on `checkOutService` side | The gateway is stored as a field but **passed in through the constructor** — it's created outside (in `main`) and can exist without the checkout service |
+| `Main` → `checkOutService`, `payUgateway`, `Razorpay` | **Dependency** | Dashed arrow `- - ->` | Only created/used as local variables in `main()` |
+
+> **Composition vs Aggregation — the rule of thumb:** *Who calls `new`?* If the owner creates the part itself (`Razorpay` → `RazorpayApi`), it's **composition**. If the part is handed in from outside (`checkOutService` ← `paymentGateway`), it's **aggregation**.
+>
+> **Object adapter vs Class adapter:** This code is an *object adapter* (it **has-a** `RazorpayApi`). A *class adapter* would instead `extends RazorpayApi implements paymentGateway` (inheritance). Object adapters are preferred in Java because a class can extend only one class.
+
+---
+
 ## Key Benefits of Adapter Pattern
 
 | Benefit | Example from this code |
@@ -204,6 +259,15 @@ Paid ₹ 1000.0 using Razorpay for orderId: 12345
 | **Decouples client from implementation details** | `checkOutService` never knows `Razorpay` wraps a differently-shaped API |
 | **Open/Closed Principle** | Adding Razorpay support didn't require changing `paymentGateway`, `checkOutService`, or `RazorpayApi` |
 | **Consistent interface across providers** | `payU` and `razorpay` can be used completely interchangeably by the client |
+
+## Disadvantages
+
+| Disadvantage | Explanation |
+|--------------|-------------|
+| **Extra classes** | One adapter class per incompatible provider adds code to maintain |
+| **Extra indirection** | Every call goes through one more layer, which makes debugging slightly harder |
+| **Lossy translation** | If the adaptee needs data the target interface doesn't carry (e.g. currency, customer ID), the adapter has to fake or hard-code it |
+| **Hard-wired adaptee** | `Razorpay` creates `RazorpayApi` itself, so it can't be swapped for a mock in tests (injecting it would fix this) |
 
 ---
 
